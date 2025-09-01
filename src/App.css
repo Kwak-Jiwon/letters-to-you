@@ -50,12 +50,33 @@ body {
   margin-bottom: 3rem;
 }
 
+/* src/App.css 파일에서 기존 .message-grid를 찾아서 교체 */
+
 .message-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
-  justify-content: center;
+  column-count: 3; /* 기본적으로 3열로 표시 */
+  column-gap: 25px; /* 열 사이의 간격 */
   padding: 0 1rem;
+}
+
+.message-grid .card {
+  display: inline-block; /* 메이슨리 레이아웃을 위한 설정 */
+  width: 100%;
+  margin-bottom: 25px; /* 카드 아래 간격 */
+  break-inside: avoid; /* 카드가 열 사이에서 잘리는 현상 방지 */
+}
+
+/* 화면 크기별로 열 개수 조절 */
+@media (max-width: 1200px) {
+  .message-grid {
+    column-count: 2; /* 노트북 화면에서는 2열 */
+  }
+}
+
+@media (max-width: 768px) {
+  .message-grid {
+    column-count: 1; /* 모바일에서는 1열 */
+  }
+  /* ... 기존 모바일 스타일 ... */
 }
 
 h1, h2 {
@@ -181,4 +202,52 @@ textarea {
   .page-container {
     padding: 1.8rem 2rem;
   }
+}
+
+
+/* src/App.css 맨 아래에 추가 */
+
+.messages-page-container {
+  position: relative; /* 자식 요소의 위치 기준점이 되도록 설정 */
+  /* ... 기존 스타일 ... */
+}
+
+.logout-button {
+  position: absolute; /* 부모(.messages-page-container)를 기준으로 위치 설정 */
+  top: 2.5rem; /* 40px */
+  right: 2.5rem; /* 40px */
+}
+
+/* 모바일 화면 대응 */
+@media (max-width: 768px) {
+  .logout-button {
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+  /* ... 기존 모바일 스타일 ... */
+}
+
+
+/* src/App.css 파일 맨 아래에 추가 */
+
+
+.toast-notification {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1rem;
+  z-index: 1000;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  20% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, 20px); }
 }

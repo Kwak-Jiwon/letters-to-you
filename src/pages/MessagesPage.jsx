@@ -78,8 +78,7 @@ function MessagesPage() {
     <div className="messages-page-container">
       <button 
         onClick={handleLogout} 
-        style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10 }}
-        className="main-button"
+        className="main-button logout-button"
       >
         로그아웃
       </button>
