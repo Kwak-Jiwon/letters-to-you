@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Recipient {
+  id             Int       @id @default(autoincrement())
+  slug           String    @unique @db.VarChar(64)
+  name           String    @db.VarChar(191)
+  accessCodeHash String    @db.VarChar(191)
+  eventDate      DateTime?
+  createdAt      DateTime  @default(now())
+  letters        Letter[]
+
+  @@index([slug])
+}
+
+model Letter {
+  id          Int       @id @default(autoincrement())
+  recipient   Recipient @relation(fields: [recipientId], references: [id])
+  recipientId Int
+  authorName  String    @db.VarChar(191)
+  messageText String?   @db.Text
+  imagePath   String?   @db.VarChar(512)
+  audioPath   String?   @db.VarChar(512)
+  createdAt   DateTime  @default(now())
+
+  @@index([recipientId, createdAt])
+}
