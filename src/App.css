@@ -5,15 +5,15 @@ body {
   background-color: #fcecdb;
   color: #3e3e3e;
   margin: 0;
-  display: flex;
+  /*display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center;*/
   min-height: 100vh;
 }
 
 .App {
   width: 100%;
-  padding: 2rem 1rem;
+  padding: 0;
   text-align: center;
 }
 
@@ -27,12 +27,14 @@ body {
 }
 
 .messages-page-container {
-  width: 90%;
-  max-width: 1400px;
+  width: 90%; /* 화면 너비의 90%를 차지 */
+  max-width: 1800px; /* 하지만 최대 1800px를 넘지 않도록 제한 */
   background-color: #fdfaf7;
+  /* padding은 그대로 유지합니다. 내부 콘텐츠의 여백 역할. */
   padding: 3rem 1.5rem;
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  /* margin으로 상하 여백과 중앙 정렬을 유지합니다. */
   margin: 2rem auto;
 }
 

@@ -1,5 +1,9 @@
 import React, { useState, useRef } from 'react'; // useRef 추가
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { API_URL } from '../apiConfig';
+
+
 
 function WritePage() {
   const { projectId } = useParams();
@@ -77,17 +81,48 @@ function WritePage() {
   };
 
   // 8. 편지 전송 핸들러 (지금은 콘솔에만 출력)
-  const handleSubmitMessage = () => {
-    console.log('--- 편지 전송 ---');
-    console.log('작성자 이름:', authorName);
-    console.log('편지 내용:', messageText);
-    console.log('첨부된 이미지:', attachedImage ? attachedImage.name : '없음');
-    console.log('첨부된 오디오:', attachedAudio ? (attachedAudio.name || '녹음된 오디오') : '없음');
-    console.log('프로젝트 ID:', projectId);
+  const handleSubmitMessage = async () => {
+    if (!authorName || !messageText) {
+      alert('이름과 편지 내용을 모두 작성해주세요.');
+      return;
+    }
 
-    alert('소중한 마음이 전달되었습니다! (실제 저장 기능은 백엔드 필요)');
-    // 나중에는 이 데이터를 Firebase로 전송합니다.
-    // 전송 후에는 보통 ThanksPage로 이동시킵니다.
+    const formData = new FormData();
+    formData.append('slug', projectId);
+    formData.append('authorName', authorName);
+    formData.append('messageText', messageText);
+    
+    if (attachedImage) {
+      formData.append('image', attachedImage);
+    }
+    if (attachedAudio) {
+      formData.append('audio', attachedAudio, 'recorded_audio.webm');
+    }
+
+    console.log('서버로 전송할 데이터:', {
+        slug: projectId,
+        authorName,
+        messageText,
+        image: attachedImage,
+        audio: attachedAudio
+    });
+
+    try {
+      const response = await axios.post(`${API_URL}/api/letters`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('편지 전송 성공:', response.data);
+      alert('소중한 마음이 성공적으로 전달되었습니다!');
+      // TODO: 작성 완료 페이지로 이동시키면 더 좋습니다.
+      
+    } catch (error) {
+      // 서버에서 온 에러 메시지를 자세히 보여줍니다.
+      console.error('편지 전송 실패:', error.response ? error.response.data : error.message);
+      alert(`편지 전송에 실패했습니다: ${error.response ? error.response.data.message : '서버에 문제가 발생했습니다.'}`);
+    }
   };
 
   return (

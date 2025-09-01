@@ -1,30 +1,37 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { API_URL } from '../apiConfig';
+
 
 function LoginPage() {
   const [projectId, setProjectId] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // localStorage에서 ID에 해당하는 프로젝트 정보를 가져옵니다.
-    const storedDataString = localStorage.getItem(projectId);
-
-    if (!storedDataString) {
-      alert('존재하지 않는 ID입니다.');
+  const handleLogin = async () => { // async 추가
+    if (!projectId || !password) {
+      alert('ID와 비밀번호를 모두 입력해주세요.');
       return;
     }
 
-    const storedData = JSON.parse(storedDataString);
+    try {
+      const response = await axios.post(`${API_URL}/api/recipients/login`, {
+        slug: projectId, // API 명세에 맞게 slug 사용
+        accessCode: password, // API 명세에 맞게 accessCode 사용
+      });
 
-    // 저장된 비밀번호와 입력한 비밀번호가 일치하는지 확인합니다.
-    if (storedData.pw === password) {
-      // 로그인 성공! sessionStorage에 로그인 상태와 ID를 저장합니다.
-      sessionStorage.setItem('auth', JSON.stringify({ loggedIn: true, projectId: projectId }));
+      const { token } = response.data;
+
+      // API 명세대로 토큰을 localStorage에 저장합니다.
+      localStorage.setItem('token', token);
+      
       alert('로그인 성공!');
       navigate(`/messages/${projectId}`); // 메시지 페이지로 이동
-    } else {
-      alert('비밀번호가 일치하지 않습니다.');
+
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      alert('ID 또는 비밀번호가 일치하지 않습니다.');
     }
   };
 
